@@ -172,10 +172,10 @@ flowchart LR
 ```
 
 ## 4. Kết quả
-### 4.1 Ảnh mô hình
+### 4.1. Ảnh mô hình
 <img width="460" height="326" alt="Image" src="https://github.com/user-attachments/assets/447eabb3-5f62-42a1-9c6a-d55e5d95c028" />
 
-### 4.2 Giao diện tổng quan Dashboard
+### 4.2. Giao diện tổng quan Dashboard
 Dashboard gồm các thành phần chính:
 - Card hiển thị trạng thái rung (Vibration): **LOW, MEDIUM, HIGH**
 - Card hiển thị trạng thái nghiêng (Tilt): **YES, NO**
@@ -193,6 +193,19 @@ Dashboard gồm các thành phần chính:
         + Gyro Z:  1.88 deg/s
 
 
+### 4.3. Lưu đồ dữ liệu Dashboard'
+<img width="703" height="94" alt="Image" src="https://github.com/user-attachments/assets/5450e05b-c1ec-48e7-80d0-2c4f32135dac" />
 
+Dashboard tiếp nhận dữ liệu từ:
+- esp32/sensor/data
 
+Dashboard gửi lệnh xuống ESP32 qua:
+- esp32/alarm/control -> {"enable": true/false}
+### 4.4. Ảnh Dashboard
+**Tắt chống trộm**
+<img width="1920" height="907" alt="Image" src="https://github.com/user-attachments/assets/a68885af-d830-40e5-85e5-be535d30857e" />
 
+**Bật chống trôm**
+<img width="1919" height="910" alt="Image" src="https://github.com/user-attachments/assets/d5ba4032-e958-47d9-bebe-434e79e25ee1" />
+
+## Video demo
