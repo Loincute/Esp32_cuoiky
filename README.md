@@ -217,3 +217,4 @@ Dashboard gửi lệnh xuống ESP32 qua:
   <img width="1121" height="476" alt="Image" src="https://github.com/user-attachments/assets/df80cfa7-27a6-4d28-8405-7fac25f9c3e6" />
   
 ## Video demo
+[Video demo](https://youtu.be/WsLQfFTPfzY)
