@@ -209,7 +209,7 @@ Dashboard gửi lệnh xuống ESP32 qua:
 <img width="1919" height="910" alt="Image" src="https://github.com/user-attachments/assets/d5ba4032-e958-47d9-bebe-434e79e25ee1" />
 
 - Hệ thống tự tắt báo động sau 120s nếu không reset.
-- 
+  
 **Email**
 - Khi có bộ thực thì còi+Led **ON** gửi cảnh báo về email 10s 1 lần.
 - Khi có bộ thực thì còi+Led **OFF** không gửi cảnh báo về email.
