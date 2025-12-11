@@ -54,7 +54,10 @@ Dự án được thực hiện nhằm chế tạo một hệ thống chống tr
 |             |  -     | GND   |
 | **LED**     |  +     | 13    |
 |             |  -     | GND   |
+#### Ảnh Fritzing
+<img width="586" height="361" alt="Image" src="https://github.com/user-attachments/assets/95d8b218-69e1-4bf2-a432-03b93f3a2746" />
 
+####
 ### 2.2. Phần mềm sử dụng
 - PlatformIO (VSCode) – lập trình ESP32.
 - MQTT Broker (MQTTX/EMQX) – trung gian truyền dữ liệu.
