@@ -57,7 +57,6 @@ Dự án được thực hiện nhằm chế tạo một hệ thống chống tr
 #### Ảnh Fritzing
 <img width="586" height="361" alt="Image" src="https://github.com/user-attachments/assets/95d8b218-69e1-4bf2-a432-03b93f3a2746" />
 
-####
 ### 2.2. Phần mềm sử dụng
 - PlatformIO (VSCode) – lập trình ESP32.
 - MQTT Broker (MQTTX/EMQX) – trung gian truyền dữ liệu.
@@ -69,7 +68,7 @@ Dự án được thực hiện nhằm chế tạo một hệ thống chống tr
 - Gửi email cảnh báo qua Node-RED khi phát hiện nghiêng/rung bất thường.
   
 ### 2.3. Nguyên lý hoạt động
-#### 1. Phát hiện nghiêng xe (Tilt detect)
+#### 2.3.1. Phát hiện nghiêng xe (Tilt detect)
 ESP32 lấy dữ liệu từ MPU6050:
 
 - Gia tốc: X/Y/Z (m/s² hoặc G)
@@ -84,7 +83,7 @@ Khi vượt ngưỡng:
 → ESP32 kích hoạt báo động.
 
 → Gửi MQTT đến Node-RED Dashboard.
-#### 2. Kích hoạt báo động
+#### 2.3.2. Kích hoạt báo động
 Điều kiện báo động:
 - Nghiêng xe vượt tilt threshold.
 - Bị nâng lên.
@@ -97,7 +96,7 @@ Khi báo động:
 - Node-RED gửi email nếu bật tính năng, 10s 1 lần nếu có cảnh báo.
   
 - Hệ thống tự tắt báo động sau 120s nếu không reset.
-#### 3. Điều khiển từ xa (MQTT control)
+#### 2.3.3. Điều khiển từ xa (MQTT control)
 ##### Bật chống trộm
 **Topic:**
 
@@ -173,3 +172,27 @@ flowchart LR
 ```
 
 ## 4. Kết quả
+### 4.1 Ảnh mô hình
+<img width="460" height="326" alt="Image" src="https://github.com/user-attachments/assets/447eabb3-5f62-42a1-9c6a-d55e5d95c028" />
+
+### 4.2 Giao diện tổng quan Dashboard
+Dashboard gồm các thành phần chính:
+- Card hiển thị trạng thái rung (Vibration): **LOW, MEDIUM, HIGH**
+- Card hiển thị trạng thái nghiêng (Tilt): **YES, NO**
+- Card hiển thị trạng thái của Led+Coi (Alarm):  **ON,OFF**
+- Card hiển thị trạng thái nâng lên (Lift): **YES, NO**
+- Công tắc điều khiển từ xa → bật/tắt hệ thống chống trộm (enable): **ON,OFF**
+- Card hiển thị MPU6050 (acc, gyro) ví dụ: 
+    + acc:
+        + Accel X:  0.12 g
+        + Accel Y: -0.03 g
+        + Accel Z:  0.98 g
+    + Gyro:
+        + Gyro X: -1.23 deg/s
+        + Gyro Y:  0.52 deg/s
+        + Gyro Z:  1.88 deg/s
+
+
+
+
+
