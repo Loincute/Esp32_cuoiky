@@ -1,89 +1,172 @@
 # HỆ THỐNG CHỐNG TRỘM XE MÁY ESP32 – MQTT – NODE-RED
 
 ## 1. Vấn đề thực tế
-### Nhu cầu thực tế
+### 1.1. Nhu cầu thực tế
 
-Tình trạng trộm cắp xe máy tại các khu vực dân cư, chung cư, bãi gửi xe ngày càng tinh vi. Những hình thức phổ biến:
-- Nâng xe để trộm bộ vành hoặc dắt xe đi.
-- Nghiêng xe để phá khóa hoặc lấy trộm đồ.
-- Tác động mạnh vào xe khi gửi ở nơi công cộng.
+Tình trạng trộm cắp xe máy ở khu dân cư, chung cư, bãi xe ngày càng tinh vi. Một số hành vi thường gặp:
+- Nâng xe để lấy trộm phụ tùng hoặc dắt xe đi.
+- Nghiêng xe để phá khoá cổ, mở cốp hoặc lấy đồ.
+- Tác động mạnh vào xe tại bãi gửi hoặc khu vực công cộng.
   
-Các hệ thống chống trộm truyền thống (khóa cơ, còi đơn thuần) không đủ thông minh để phát hiện chính xác hành vi trộm.
+Các biện pháp chống trộm truyền thống như khóa cơ, còi, chuông đơn thuần không đủ thông minh để:
 
 Vì vậy cần một giải pháp IoT thông minh:
-- Phát hiện nghiêng – nâng xe dựa vào cảm biến gia tốc/gyro.
-- Báo về điện thoại ngay lập tức qua MQTT.
-- Ghi log lịch sử, hiển thị biểu đồ, điều khiển từ xa.
+- Phát hiện chính xác hành vi nghiêng, nâng xe.
+- Gửi cảnh báo từ xa.
+- Lưu lịch sử và điều khiển bằng điện thoại..
 
-### Lý do thực hiện
-Dự án được thực hiện nhằm tạo ra một thiết bị chống trộm xe giá rẻ, nhỏ gọn, có thể lắp được cho mọi loại xe:
-- Sử dụng ESP32, dễ lập trình, giá thành thấp.
-- SW-420 đo độ rung xe.
-- MPU6050 đo nghiêng – rung – nâng xe siêu nhạy.
-- MQTT + Node-RED giúp hiển thị trực quan và cảnh báo real-time.logy accessible to small- and medium-sized parking facilities.
+### 1.2. Lý do thực hiện
+Dự án được thực hiện nhằm chế tạo một hệ thống chống trộm thông minh – giá rẻ – nhỏ gọn – hiệu quả, sử dụng:
+- ESP32 – có WiFi, mạnh, giá thành thấp.
+- MPU6050 – đo nghiêng, rung, chuyển động nâng xe
+- SW-420 – phát hiện rung mạnh khi bị tác động.
+- MQTT + Node-RED – gửi cảnh báo real-time và điều khiển từ xa.
+
+  Hệ thống phù hợp cho:
+  - Cá nhân lắp cho xe máy.
+  - Bãi gửi xe nhỏ-to, hộ gia đình.
+  - Mô hình học tập IoT.
 
 ## 2. Nội dung chính
 
 ### 2.1. Phần cứng sử dụng
 
-| Thiết bị                          | Chức năng                                      |
-|-----------------------------------|------------------------------------------------|
-| ESP32                             | Vi điều khiển chính                            |
-| MPU6050 (Accel + Gyro)            | Phát hiện nghiêng xe, nâng xe, rung động       |
-| Buzzer                            | Báo động khi phát hiện trộm                    |
-| LED (trạng thái hệ thống)         | ON/OFF – báo trạng thái chống trộm             |
-| Nguồn máy tính                    | Cấp nguồn cho ESP32 & MPU6050                  |
+| Thiết bị                          | Chức năng                                        |
+|-----------------------------------|--------------------------------------------------|
+| ESP32                             | Vi điều khiển trung tâm, kết nối WiFi & MQTT     |
+| MPU6050 (Accel + Gyro)            | Phát hiện nghiêng, nâng, rung nhỏ                |
+| SW-420                            | Phát hiện rung mạnh, tác động mạnh               |
+| Buzzer                            | Phát âm báo động                                 |
+| LED (trạng thái hệ thống)         | Báo trạng thái chống trộm ON/OFF                 |
+| Nguồn USB/5V                      | Cấp nguồn cho ESP32                              |
+#### Sơ đồ chân
 
-### 2.2. Phần mềm sử dụng
-- Node-RED Dashboard
-    + Hiển thị trạng thái chống trộm: ON/OFF
-    + Giá trị Accel & Gyro hiện thực
-    + Lịch sử cảnh báo qua email qua Node-RED
-- MQTT Broker: MQTTX
-- PlatformIO để lập trình ESP32
-### 2.3. Nguyên lý hoạt động
-#### 1. Phát hiện nghiêng xe
-ESP32 lấy dữ liệu từ MPU6050:
-- Gia tốc trục X/Y/Z
-- Gyro trục X/Y/Z
-Khi góc nghiêng vượt ngưỡng cảnh báo:
-- TiltThreshold = 0.7G → Nghiêng trái/phải mạnh
-- LiftThreshold = 0.6G → Bị nâng bánh lên
-  
-→ Hệ thống kích hoạt báo động, gửi MQTT đến Dashboard.
-#### 2. Kích hoạt báo động
-Điều kiện báo động:
-- Nghiêng xe quá mức
-- Nâng đầu xe
-- Xe bị rung mạnh (gyro tăng đột ngột)
-Khi báo động:
-- Buzzer kêu 150ms ON / 150ms OFF
-- Dashboard hiển thị ALARM = 1
-- Sau 120 giây tự tắt (nếu không reset)
-#### 3. Điều khiển từ xa
-Dashboard có nút:
-Chống trộm ON
-Chống trộm OFF
-Cho phép bật/tắt còi qua MQTT
-#### 4. Ghi log & biểu đồ
-Node-RED lưu:
-Accel X/Y/Z
-Gyro X/Y/Z
-Lịch sử thời điểm báo động
-Mức độ nghiêng
-## 3. Sơ đồ khối
-[MPU6050] → (I2C) → [ESP32] → MQTT → [Node-RED Dashboard]
-                                ↓
-                             Buzzer
-                                ↓
-                               LED
-## 4. Sơ đồ chân ESP32
 | Thiết bị    | Chân   | ESP32 |
 | ----------- | ------ | ----- |
 | **MPU6050** | VCC    | 3.3V  |
 |             | GND    | GND   |
 |             | SCL    | 22    |
 |             | SDA    | 21    |
-| **Buzzer**  | Signal | 27    |
-| **LED**     | Signal | 26    |
-## 5. Kết quả
+| **SW420**   | VCC    | 3.3V  |
+|             | GND    | GND   |
+|             | DO     | 34    |
+| **Buzzer**  |  +     | 25    |
+|             |  -     | GND   |
+| **LED**     |  +     | 13    |
+|             |  -     | GND   |
+
+### 2.2. Phần mềm sử dụng
+- PlatformIO (VSCode) – lập trình ESP32.
+- MQTT Broker (MQTTX/EMQX) – trung gian truyền dữ liệu.
+- Node-RED – xử lý dữ liệu, automation.
+- Node-RED Dashboard – hiển thị:
+    + Trạng thái chống trộm ON/OFF.
+    + Accel X/Y/Z – Gyro X/Y/Z real-time.
+    + Lịch sử cảnh báo.
+- Gửi email cảnh báo qua Node-RED khi phát hiện nghiêng/rung bất thường.
+  
+### 2.3. Nguyên lý hoạt động
+#### 1. Phát hiện nghiêng xe (Tilt detect)
+ESP32 lấy dữ liệu từ MPU6050:
+
+- Gia tốc: X/Y/Z (m/s² hoặc G)
+- Gyro: X/Y/Z (°/s)
+  
+Ngưỡng cơ bản (tuỳ chỉnh):
+- TiltThreshold ≈ 0.7G → xe bị nghiêng mạnh trái/phải.
+- LiftThreshold ≈ 0.6G → xe bị nâng bánh lên.
+  
+Khi vượt ngưỡng:
+
+→ ESP32 kích hoạt báo động.
+
+→ Gửi MQTT đến Node-RED Dashboard.
+#### 2. Kích hoạt báo động
+Điều kiện báo động:
+- Nghiêng xe vượt tilt threshold.
+- Bị nâng lên.
+- Rung mạnh (SW-420 hoặc Gyro tăng đột ngột).
+Khi báo động:
+- Buzzer: **Bip 150ms ON / 150ms OFF**.
+- LED nháy nhanh.
+- MQTT publish:
+  {"alarm": "ON"}
+- Node-RED gửi email nếu bật tính năng, 10s 1 lần nếu có cảnh báo.
+  
+- Hệ thống tự tắt báo động sau 120s nếu không reset.
+#### 3. Điều khiển từ xa (MQTT control)
+##### Bật chống trộm
+**Topic:**
+
+esp32/alarm/control
+
+**Payload:**
+```json
+{"enable": true}
+```
+##### Tắt chống trộm
+**Topic:**
+
+esp32/alarm/control
+
+**Payload:**
+```json
+{"enable": false}
+```
+**Topic dữ liệu ESP32 gửi lên**
+
+esp32/alarm/data
+```json
+{
+  "vibration": "LOW",
+  "tilt": "NO",
+  "lift": "NO",
+  "alarm": "OFF",
+  "acc": {"x":0.12,"y":-0.03,"z":0.98},
+  "gyro": {"x":-1.1,"y":0.5,"z":1.3}
+}
+
+```
+
+## 3. Sơ đồ khối
+```
+Baitapcuoiky
+├── include
+│   └── ca_cert_emqx.h
+├── lib
+│   ├── alarm
+│   │   ├── alarm.cpp
+│   │   └── alarm.h
+│   ├── mqtt_client
+│   │   ├── mqtt_client.cpp
+│   │   └── mqtt_client.h
+│   ├── sensor_sw420
+│   │   ├── sensor_sw420.cpp
+│   │   └── sensor_sw420.h
+│   └── sensor_mpu6050
+│       ├── sensor_mpu6050.cpp
+│       └── sensor_mpu6050.h
+├── src
+│   └── main.cpp
+```
+### Giải thích cấu trúc thư mục
+
+| Thư mục / File        | Chức năng                                       |
+|-----------------------|-------------------------------------------------|
+| `include/`            | Chứa file chứng chỉ MQTT                        |
+| `lib/alarm/`          | Xử lý bật/tắt báo động, điều khiển buzzer/LED.  |
+| `lib/mqtt_client/`    | Kết nối MQTT, publish/subscribe.                |
+| `lib/sensor_sw420/`   | Xử lý đọc cảm biến rung SW420.                  |
+| `lib/sensor_mpu6050/` | Xử lý đọc cảm biến MPU6050.                     |
+| `src/main.cpp`        | Chương trình chính của ESP32.                   |
+
+```mermaid
+flowchart LR
+    SW[SW420 - Rung] --> ESP[ESP32]
+    MPU[MPU6050 - Gia tốc/Gyro] --> ESP
+    ESP --> MQTT[(MQTT Broker)]
+    MQTT --> NR[Node-RED]
+    NR --> UI[Dashboard / Cảnh báo]
+```
+
+## 4. Kết quả
