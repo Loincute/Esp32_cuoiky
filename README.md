@@ -18,6 +18,7 @@ Vì vậy cần một giải pháp IoT thông minh:
 ### Lý do thực hiện
 Dự án được thực hiện nhằm tạo ra một thiết bị chống trộm xe giá rẻ, nhỏ gọn, có thể lắp được cho mọi loại xe:
 - Sử dụng ESP32, dễ lập trình, giá thành thấp.
+- SW-420 đo độ rung xe.
 - MPU6050 đo nghiêng – rung – nâng xe siêu nhạy.
 - MQTT + Node-RED giúp hiển thị trực quan và cảnh báo real-time.logy accessible to small- and medium-sized parking facilities.
 
